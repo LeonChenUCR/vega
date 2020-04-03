@@ -6,11 +6,13 @@ import {TextMark} from '../marks/marktypes';
 import {AxisTitleRole} from '../marks/roles';
 import {addEncode, addEncoders} from '../encode/encode-util';
 import {extend} from 'vega-util';
+import { isSignal } from '../../util';
+import { topOrLeftAxisExpr, topOrBottomAxisExpr } from './axis-config';
 
 export default function(spec, config, userEncode, dataRef) {
   var _ = lookup(spec, config),
       orient = spec.orient,
-      sign = (orient === Left || orient === Top) ? -1 : 1,
+      sign = isSignal(orient) ? topOrLeftAxisExpr(orient.signal, 1, -1) : (orient === Left || orient === Top) ? 1 : -1,
       horizontal = (orient === Top || orient === Bottom),
       encode, enter, update, titlePos;
 
@@ -33,15 +35,24 @@ export default function(spec, config, userEncode, dataRef) {
     signal: `lerp(range("${spec.scale}"), ${anchorExpr(0, 1, 0.5)})`
   };
 
-  if (horizontal) {
-    update.x = titlePos;
-    enter.angle = {value: 0};
-    enter.baseline = {value: orient === Top ? 'bottom' : 'top'};
+  if (isSignal(orient)) {
+    update.x = topOrBottomAxisExpr(orient.signal, titlePos.signal, undefined);
+    update.y = topOrBottomAxisExpr(orient.signal, undefined, titlePos.signal);
+
+    enter.angle = topOrBottomAxisExpr(orient.signal, 0, `90 * (${sign})`);
+    enter.baseline = { signal: `${orient.signal} === "${Top}" ? "bottom" : "top"` };
   } else {
-    update.y = titlePos;
-    enter.angle = {value: sign * 90};
-    enter.baseline = {value: 'bottom'};
+    if (horizontal) {
+      update.x = titlePos;
+      enter.angle = {value: 0};
+      enter.baseline = {value: orient === Top ? 'bottom' : 'top'};
+    } else {
+      update.y = titlePos;
+      enter.angle = {value: sign * 90};
+      enter.baseline = {value: 'bottom'};
+    }
   }
+
 
   addEncoders(encode, {
     angle:       _('titleAngle'),
@@ -58,13 +69,23 @@ export default function(spec, config, userEncode, dataRef) {
     align:       _('titleAlign')
   });
 
-  !addEncode(encode, 'x', _('titleX'), 'update')
-    && !horizontal && !has('x', userEncode)
-    && (encode.enter.auto = {value: true});
+  if (!addEncode(encode, 'x', _('titleX'), 'update')) {
+    if (isSignal(orient)) {
+      encode.enter.auto = topOrBottomAxisExpr(orient.signal, true, undefined);
+    } else {
+      !horizontal && !has('x', userEncode)
+      && (encode.enter.auto = {value: true});
+    }
+  }
 
-  !addEncode(encode, 'y', _('titleY'), 'update')
-    && horizontal && !has('y', userEncode)
-    && (encode.enter.auto = {value: true});
+  if (!addEncode(encode, 'y', _('titleY'), 'update')) {
+    if (isSignal(orient)) {
+      encode.enter.auto = topOrBottomAxisExpr(orient.signal, true, undefined);
+    } else {
+      horizontal && !has('y', userEncode)
+      && (encode.enter.auto = {value: true});
+    }
+  }
 
   return guideMark(TextMark, AxisTitleRole, GuideTitleStyle, null, dataRef, encode, userEncode);
 }
