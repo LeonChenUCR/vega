@@ -1,39 +1,7 @@
-import {Top, Bottom, Left} from './constants';
+import {Top, Bottom} from './constants';
 import {extend} from 'vega-util';
 import { isSignal } from '../../util';
-import { isNumber } from 'util';
-
-export function topOrBottomAxisExpr(signalExpr, topOrBottom, otherwise) {
-  /* eslint-disable no-console */
-  // console.log(topOrBottom);
-  // console.log(otherwise);
-
-  var topOrBottomStr = isNumber(topOrBottom) ? `${topOrBottom}` : `"${topOrBottom}"`;
-  var otherwiseStr = isNumber(otherwise) ? `${otherwise}` : `"${otherwise}"`;
-  return {
-    signal: `${signalExpr} === "${Top}" || ${signalExpr} === "${Bottom}" ? ${topOrBottomStr} : ${otherwiseStr}`
-  }
-}
-
-export function axisOrientExpr(signalExpr, top, bottom, left, right) {
-  var topStr = isNumber(top) ? `${top}` : `"${top}"`;
-  var bottomStr = isNumber(bottom) ? `${bottom}` : `"${bottom}"`;
-  var leftStr = isNumber(left) ? `${left}` : `"${left}"`;
-  var rightStr = isNumber(right) ? `${right}` : `"${right}"`;
-
-  return {
-    signal: `${signalExpr} === "${Top}" ? ${topStr} : ${signalExpr} === "${Bottom}" ? ${bottomStr} : ${signalExpr} === "${Left}" ? ${leftStr} : ${rightStr}`
-  }
-}
-
-export function topOrLeftAxisExpr(signalExpr, topOrLeft, otherwise) {
-  var topOrLeftStr = isNumber(topOrLeft) ? `${topOrLeft}` : `"${topOrLeft}"`;
-  var otherwiseStr = isNumber(otherwise) ? `${otherwise}` : `"${otherwise}"`;
-
-  return {
-    signal: `${signalExpr} === "${Top}" || ${signalExpr} === "${Left}" ? ${topOrLeftStr} : ${otherwiseStr}`
-  }
-}
+import { ifXAxisExpr, axisOrientExpr } from './axis-util';
 
 export default function(spec, scope) {
   var config = scope.config,
@@ -49,7 +17,7 @@ export default function(spec, scope) {
   
     xy = {};
     for (var prop of axisXYConfigKeys) {
-      xy[prop] = topOrBottomAxisExpr(spec.orient.signal, config.axisX ? config.axisX[prop] : undefined, config.axisY ? config.axisY[prop] : undefined);
+      xy[prop] = ifXAxisExpr(spec.orient.signal, config.axisX ? config.axisX[prop] : undefined, config.axisY ? config.axisY[prop] : undefined);
     }
 
     or = {};

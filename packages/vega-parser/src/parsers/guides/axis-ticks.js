@@ -5,12 +5,12 @@ import {RuleMark} from '../marks/marktypes';
 import {AxisTickRole} from '../marks/roles';
 import {addEncoders, encoder} from '../encode/encode-util';
 import { isSignal } from '../../util';
-import { topOrLeftAxisExpr, topOrBottomAxisExpr } from './axis-config';
+import { ifTopOrLeftAxisExpr, isXAxisExpr } from './axis-util';
 
 export default function(spec, config, userEncode, dataRef, size, band) {
   var _ = lookup(spec, config),
       orient = spec.orient,
-      sign = isSignal(orient) ? topOrLeftAxisExpr(orient.signal, -1, 1) : (orient === Left || orient === Top) ? -1 : 1,
+      sign = isSignal(orient) ? ifTopOrLeftAxisExpr(orient.signal, -1, 1) : (orient === Left || orient === Top) ? -1 : 1,
       encode, enter, exit, update, tickSize, tickPos;
 
   encode = {
@@ -40,61 +40,51 @@ export default function(spec, config, userEncode, dataRef, size, band) {
   };
 
   if (isSignal(orient)) {
-    update.y = enter.y = {
-      value: topOrBottomAxisExpr(orient.signal, zero.value, undefined),
-      scale:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.scale),
-      field:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.field),
-      band:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.band),
-      extra:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.extra),
-      offset:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.offset),
-      round:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.round),
-    }
+    update.y = enter.y = [
+      {
+        test: isXAxisExpr(orient.signal, true), value: zero.value
+      },
+      {
+        ...tickPos
+      }
+    ];
 
-    exit.y = {
-      scale:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.scale),
-      field:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.field),
-      band:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.band),
-      extra:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.extra),
-      offset:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.offset),
-      round:  topOrBottomAxisExpr(orient.signal, undefined, tickPos.round),
-    }
+    update.x = enter.x = [
+      {
+        test: isXAxisExpr(orient.signal, false), value: zero.value
+      },
+      {
+        ...tickPos
+      }
+    ];
 
-    update.y2 = enter.y2 = {
-      scale:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.scale),
-      field:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.field),
-      band:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.band),
-      extra:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.extra),
-      offset:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.offset),
-      round:  topOrBottomAxisExpr(orient.signal, undefined, tickSize.round),
-    }
+    update.y2 = enter.y2 = [
+      {
+        test: isXAxisExpr(orient.signal, true),
+        ...tickSize
+      }
+    ]
 
-    update.x = enter.x = {
-      value: topOrBottomAxisExpr(orient.signal, undefined, zero.value),
-      scale:  topOrBottomAxisExpr(orient.signal, tickPos.scale, undefined),
-      field:  topOrBottomAxisExpr(orient.signal, tickPos.field, undefined),
-      band:  topOrBottomAxisExpr(orient.signal, tickPos.band, undefined),
-      extra:  topOrBottomAxisExpr(orient.signal, tickPos.extra, undefined),
-      offset:  topOrBottomAxisExpr(orient.signal, tickPos.offset, undefined),
-      round:  topOrBottomAxisExpr(orient.signal, tickPos.round, undefined),
-    }
+    update.x2 = enter.x2 = [
+      {
+        test: isXAxisExpr(orient.signal, false),
+        ...tickSize
+      }
+    ]
 
-    exit.x = {
-      scale:  topOrBottomAxisExpr(orient.signal, tickPos.scale, undefined),
-      field:  topOrBottomAxisExpr(orient.signal, tickPos.field, undefined),
-      band:  topOrBottomAxisExpr(orient.signal, tickPos.band, undefined),
-      extra:  topOrBottomAxisExpr(orient.signal, tickPos.extra, undefined),
-      offset:  topOrBottomAxisExpr(orient.signal, tickPos.offset, undefined),
-      round:  topOrBottomAxisExpr(orient.signal, tickPos.round, undefined),
-    }
+    exit.x = [
+      {
+        test: isXAxisExpr(orient.signal, true),
+        ...tickPos
+      }
+    ]
 
-    update.x2 = enter.x2 = {
-      scale:  topOrBottomAxisExpr(orient.signal, tickSize.scale, undefined),
-      field:  topOrBottomAxisExpr(orient.signal, tickSize.field, undefined),
-      band:  topOrBottomAxisExpr(orient.signal, tickSize.band, undefined),
-      extra:  topOrBottomAxisExpr(orient.signal, tickSize.extra, undefined),
-      offset:  topOrBottomAxisExpr(orient.signal, tickSize.offset, undefined),
-      round:  topOrBottomAxisExpr(orient.signal, tickSize.round, undefined),
-    }
+    exit.y = [
+      {
+        test: isXAxisExpr(orient.signal, false),
+        ...tickPos
+      }
+    ]
 
   } else {
     if (orient === Top || orient === Bottom) {

@@ -1,4 +1,4 @@
-import { topOrBottomAxisExpr } from './axis-config';
+import { isXAxisExpr } from './axis-util';
 import {Top, Bottom, zero, one} from './constants';
 import guideMark from './guide-mark';
 import {lookup} from './guide-util';
@@ -27,10 +27,53 @@ export default function(spec, config, userEncode, dataRef) {
   });
 
   if (isSignal(spec.orient)) {
-    update['x'] = enter['x'] = signalPosition(spec, position(spec,0), true);
-    update['y'] = enter['y'] = signalPosition(spec, position(spec,0), false);
-    update['x2'] = enter['x2'] = signalPosition(spec, position(spec,1), true);
-    update['y2'] = enter['y2'] = signalPosition(spec, position(spec,1), false);
+    enter['y'] = [
+      {
+        test: isXAxisExpr(orient.signal, true),
+        ...zero
+      },
+      {
+        ...position(spec, 0)
+      }
+    ];
+
+    enter['x'] = [
+      {
+        test: isXAxisExpr(orient.signal, false),
+        ...zero
+      },
+      {
+        ...position(spec, 0)
+      }
+    ]
+
+    update['x'] = [
+      {
+        test: isXAxisExpr(orient.signal, true),
+        ...position(spec, 0)
+      }
+    ]
+
+    update['y'] = [
+      {
+        test: isXAxisExpr(orient.signal, false),
+        ...position(spec, 0)
+      }
+    ]
+
+    update['x2'] = enter['x2'] = [
+      {
+        test: isXAxisExpr(orient.signal, true),
+        ...position(spec, 1)
+      }
+    ]
+
+    update['y2'] = enter['y2'] = [
+      {
+        test: isXAxisExpr(orient.signal, false),
+        ...position(spec, 1)
+      }
+    ]
   } else {
     if (orient === Top || orient === Bottom) {
       u = 'x';
@@ -51,11 +94,4 @@ export default function(spec, config, userEncode, dataRef) {
 
 function position(spec, pos) {
   return {scale: spec.scale, range: pos};
-}
-
-function signalPosition(spec, pos, topOrBottom) {
-  var yes = topOrBottom ? pos.range : 0,
-      no = topOrBottom ? 0 : pos.range;
-
-  return {scale: spec.scale, range: topOrBottomAxisExpr(spec.orient.signal, yes, no).signal}
 }

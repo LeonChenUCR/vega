@@ -1,3 +1,4 @@
+import {ifTopOrLeftAxisExpr, isXAxisExpr, isXAxisConditionalEncoding} from './axis-util';
 import {Top, Bottom, Left, GuideTitleStyle, zero, one} from './constants';
 import guideMark from './guide-mark';
 import {alignExpr, anchorExpr, lookup} from './guide-util';
@@ -7,12 +8,11 @@ import {AxisTitleRole} from '../marks/roles';
 import {addEncode, addEncoders} from '../encode/encode-util';
 import {extend} from 'vega-util';
 import { isSignal } from '../../util';
-import { topOrLeftAxisExpr, topOrBottomAxisExpr } from './axis-config';
 
 export default function(spec, config, userEncode, dataRef) {
   var _ = lookup(spec, config),
       orient = spec.orient,
-      sign = isSignal(orient) ? topOrLeftAxisExpr(orient.signal, 1, -1) : (orient === Left || orient === Top) ? 1 : -1,
+      sign = isSignal(orient) ? ifTopOrLeftAxisExpr(orient.signal, 1, -1) : (orient === Left || orient === Top) ? 1 : -1,
       horizontal = (orient === Top || orient === Bottom),
       encode, enter, update, titlePos;
 
@@ -36,11 +36,10 @@ export default function(spec, config, userEncode, dataRef) {
   };
 
   if (isSignal(orient)) {
-    update.x = topOrBottomAxisExpr(orient.signal, titlePos.signal, undefined);
-    update.y = topOrBottomAxisExpr(orient.signal, undefined, titlePos.signal);
-
-    enter.angle = topOrBottomAxisExpr(orient.signal, 0, `90 * (${sign})`);
-    enter.baseline = { signal: `${orient.signal} === "${Top}" ? "bottom" : "top"` };
+    update.x = isXAxisConditionalEncoding(orient.signal, titlePos, null);
+    update.y = isXAxisConditionalEncoding(orient.signal, titlePos, null, false);
+    enter.angle = isXAxisConditionalEncoding(orient.signal, zero, { value: sign, mult: 90});
+    enter.baseline = isXAxisConditionalEncoding(orient.signal, {signal: `(${orient.signal}) === "${Top}" ? "bottom" : "top"`}, { value: 'bottom' });
   } else {
     if (horizontal) {
       update.x = titlePos;
@@ -52,7 +51,6 @@ export default function(spec, config, userEncode, dataRef) {
       enter.baseline = {value: 'bottom'};
     }
   }
-
 
   addEncoders(encode, {
     angle:       _('titleAngle'),
@@ -69,22 +67,46 @@ export default function(spec, config, userEncode, dataRef) {
     align:       _('titleAlign')
   });
 
-  if (!addEncode(encode, 'x', _('titleX'), 'update')) {
-    if (isSignal(orient)) {
-      encode.enter.auto = topOrBottomAxisExpr(orient.signal, true, undefined);
-    } else {
+  if (isSignal(orient)) {
+    if (_('titleX') != null) {
+      encode.update['x'][0] = {
+        ...encode.update['x'][0],
+        signal: undefined,
+        ..._('titleX')
+      }
+
+      encode.enter.auto = [
+        {
+          test: isXAxisExpr(orient.signal, false),
+          value: !has('x', userEncode) ? true : undefined
+        }
+      ]
+    }
+
+    if (_('titleY') != null) {
+      encode.update['y'][0] = {
+        ...encode.update['y'][0],
+        signal: undefined,
+        ..._('titleY')
+      }
+
+      encode.enter.auto = [
+        {
+          test: isXAxisExpr(orient.signal, false),
+          value: !has('x', userEncode) ? true : undefined
+        }
+      ]
+    }
+  } else {
+    if (!addEncode(encode, 'x', _('titleX'), 'update')) {
       !horizontal && !has('x', userEncode)
       && (encode.enter.auto = {value: true});
     }
-  }
-
-  if (!addEncode(encode, 'y', _('titleY'), 'update')) {
-    if (isSignal(orient)) {
-      encode.enter.auto = topOrBottomAxisExpr(orient.signal, true, undefined);
-    } else {
+  
+    if (!addEncode(encode, 'y', _('titleY'), 'update')) {
       horizontal && !has('y', userEncode)
       && (encode.enter.auto = {value: true});
-    }
+    }  
   }
 
   return guideMark(TextMark, AxisTitleRole, GuideTitleStyle, null, dataRef, encode, userEncode);

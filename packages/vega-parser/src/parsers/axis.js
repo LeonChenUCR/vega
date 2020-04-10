@@ -39,6 +39,7 @@ export default function(spec, scope) {
   // encoding properties for axis group item
   axisEncode = extendEncode({
     update: {
+      orient:       encoder(_('orient')),
       offset:       encoder(_('offset') || 0),
       position:     encoder(value(spec.position, 0)),
       titlePadding: encoder(_('titlePadding')),
@@ -91,6 +92,7 @@ export default function(spec, scope) {
 
   // build axis specification
   group = guideGroup(AxisRole, style, name, dataRef, interactive, axisEncode, children);
+
   if (spec.zindex) group.zindex = spec.zindex;
 
   // parse axis specification
