@@ -219,7 +219,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 200.5
+                      "y": 200.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 0
@@ -592,7 +593,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -602,7 +603,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 0
@@ -5098,7 +5100,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 200.5
+                      "y": 200.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 0
@@ -5471,7 +5474,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -5481,7 +5484,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 0
@@ -9977,7 +9981,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 200.5
+                      "y": 200.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 0
@@ -10350,7 +10355,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -10360,7 +10365,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 0

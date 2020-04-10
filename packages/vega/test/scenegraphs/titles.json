@@ -502,7 +502,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 100.5
+                      "y": 100.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 1
@@ -795,7 +796,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -805,7 +806,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 1
@@ -1545,7 +1547,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 100.5
+                      "y": 100.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 1
@@ -1838,7 +1841,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -1848,7 +1851,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 1
@@ -2074,7 +2078,7 @@
                           "zindex": 0
                         }
                       ],
-                      "x": -77.00000000000001,
+                      "x": -66.00000000000001,
                       "y": 50,
                       "align": "center",
                       "orient": "left",
@@ -2588,7 +2592,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 100.5
+                      "y": 100.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 1
@@ -2881,7 +2886,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -2891,7 +2896,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 1
@@ -3632,7 +3638,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 100.5
+                      "y": 100.5,
+                      "orient": "bottom"
                     }
                   ],
                   "zindex": 1
@@ -3925,7 +3932,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -3935,7 +3942,8 @@
                         }
                       ],
                       "x": 0.5,
-                      "y": 0.5
+                      "y": 0.5,
+                      "orient": "left"
                     }
                   ],
                   "zindex": 1

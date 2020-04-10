@@ -363,7 +363,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Population",
-                      "angle": -90,
+                      "angle": 90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -373,7 +373,8 @@
                 }
               ],
               "x": 0.5,
-              "y": 0.5
+              "y": 0.5,
+              "orient": "left"
             }
           ],
           "zindex": 0
@@ -739,7 +740,8 @@
                 }
               ],
               "x": 0.5,
-              "y": 250.5
+              "y": 250.5,
+              "orient": "bottom"
             }
           ],
           "zindex": 0
@@ -1552,7 +1554,7 @@
                   "zindex": 0
                 }
               ],
-              "x": 214.1193063937629,
+              "x": 219.6193063937629,
               "y": -25,
               "align": "center",
               "orient": "top",

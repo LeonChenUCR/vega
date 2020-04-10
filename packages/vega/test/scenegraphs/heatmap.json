@@ -309,7 +309,8 @@
                 }
               ],
               "x": 0.5,
-              "y": 500.5
+              "y": 500.5,
+              "orient": "bottom"
             }
           ],
           "zindex": 0
@@ -858,7 +859,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Hour",
-                      "angle": -90,
+                      "angle": 90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -868,7 +869,8 @@
                 }
               ],
               "x": 0.5,
-              "y": 0.5
+              "y": 0.5,
+              "orient": "left"
             }
           ],
           "zindex": 0
@@ -62422,7 +62424,7 @@
                   "zindex": 0
                 }
               ],
-              "x": -86,
+              "x": -75,
               "y": -34,
               "align": "left",
               "orient": "top",
