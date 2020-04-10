@@ -658,7 +658,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Hour",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -62433,7 +62433,7 @@
                   "zindex": 0
                 }
               ],
-              "x": -70,
+              "x": -81,
               "y": -18,
               "align": "left",
               "orient": "top",

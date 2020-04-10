@@ -796,7 +796,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -1841,7 +1841,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -2078,7 +2078,7 @@
                           "zindex": 0
                         }
                       ],
-                      "x": -66.00000000000001,
+                      "x": -77.00000000000001,
                       "y": 50,
                       "align": "center",
                       "orient": "left",
@@ -2886,7 +2886,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -3932,7 +3932,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Y-Axis",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"

@@ -12,7 +12,7 @@ import { isSignal } from '../../util';
 export default function(spec, config, userEncode, dataRef) {
   var _ = lookup(spec, config),
       orient = spec.orient,
-      sign = isSignal(orient) ? ifTopOrLeftAxisExpr(orient.signal, 1, -1) : (orient === Left || orient === Top) ? 1 : -1,
+      sign = isSignal(orient) ? ifTopOrLeftAxisExpr(orient.signal, -1, 1) : (orient === Left || orient === Top) ? -1 : 1,
       horizontal = (orient === Top || orient === Bottom),
       encode, enter, update, titlePos;
 
@@ -48,7 +48,7 @@ export default function(spec, config, userEncode, dataRef) {
   } else {
     update.x = xAxisConditionalEncoding(orient.signal, titlePos, null);
     update.y = xAxisConditionalEncoding(orient.signal, titlePos, null, false);
-    enter.angle = xAxisConditionalEncoding(orient.signal, zero, { value: sign, mult: 90});
+    enter.angle = xAxisConditionalEncoding(orient.signal, zero, { signal: sign, mult: 90});
     enter.baseline = xAxisConditionalEncoding(orient.signal, {signal: `(${orient.signal}) === "${Top}" ? "bottom" : "top"`}, { value: 'bottom' });
   }
 

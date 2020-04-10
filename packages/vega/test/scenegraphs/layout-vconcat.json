@@ -593,7 +593,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -5474,7 +5474,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -10355,7 +10355,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"

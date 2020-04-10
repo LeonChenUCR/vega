@@ -420,7 +420,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Sum of count",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"

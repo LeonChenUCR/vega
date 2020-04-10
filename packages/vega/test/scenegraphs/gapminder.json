@@ -358,7 +358,7 @@
                       "fill": "#444",
                       "opacity": 1,
                       "text": "Life Expentancy (Years)",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -1554,7 +1554,7 @@
                 }
               ],
               "x": 0,
-              "y": -224,
+              "y": -27,
               "align": "left",
               "orient": "top",
               "angle": 0

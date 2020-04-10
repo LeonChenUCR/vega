@@ -593,7 +593,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -5474,7 +5474,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -9732,7 +9732,7 @@
                   "zindex": 0
                 }
               ],
-              "x": 361,
+              "x": 372,
               "y": 0,
               "width": 200,
               "height": 200
@@ -10355,7 +10355,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "Miles_per_Gallon",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -14613,7 +14613,7 @@
                   "zindex": 0
                 }
               ],
-              "x": 722,
+              "x": 744,
               "y": 0,
               "width": 200,
               "height": 200

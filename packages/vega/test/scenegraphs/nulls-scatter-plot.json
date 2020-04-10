@@ -599,7 +599,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "IMDB_Rating",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"

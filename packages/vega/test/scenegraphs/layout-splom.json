@@ -17331,7 +17331,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "petalWidth",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -17560,7 +17560,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "petalLength",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -17747,7 +17747,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "sepalWidth",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -17934,7 +17934,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "sepalLength",
-                              "angle": 90,
+                              "angle": -90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -18151,7 +18151,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "petalWidth",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -18380,7 +18380,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "petalLength",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -18567,7 +18567,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "sepalWidth",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -18754,7 +18754,7 @@
                               "fill": "#000",
                               "opacity": 1,
                               "text": "sepalLength",
-                              "angle": -90,
+                              "angle": 90,
                               "font": "sans-serif",
                               "fontSize": 11,
                               "fontWeight": "bold"
@@ -20646,7 +20646,7 @@
                   "zindex": 0
                 }
               ],
-              "x": 565,
+              "x": 576,
               "y": 0,
               "width": 96,
               "height": 61,

@@ -173,7 +173,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Petal Width",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -376,7 +376,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Petal Length",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -537,7 +537,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Sepal Width",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
@@ -698,7 +698,7 @@
                       "fill": "#000",
                       "opacity": 1,
                       "text": "Sepal Length",
-                      "angle": 90,
+                      "angle": -90,
                       "font": "sans-serif",
                       "fontSize": 11,
                       "fontWeight": "bold"
