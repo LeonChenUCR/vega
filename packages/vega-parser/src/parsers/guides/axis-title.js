@@ -1,4 +1,4 @@
-import {ifTopOrLeftAxisExpr, isXAxisExpr, isXAxisConditionalEncoding} from './axis-util';
+import {ifTopOrLeftAxisExpr, xAxisExpr, xAxisConditionalEncoding} from './axis-util';
 import {Top, Bottom, Left, GuideTitleStyle, zero, one} from './constants';
 import guideMark from './guide-mark';
 import {alignExpr, anchorExpr, lookup} from './guide-util';
@@ -35,12 +35,7 @@ export default function(spec, config, userEncode, dataRef) {
     signal: `lerp(range("${spec.scale}"), ${anchorExpr(0, 1, 0.5)})`
   };
 
-  if (isSignal(orient)) {
-    update.x = isXAxisConditionalEncoding(orient.signal, titlePos, null);
-    update.y = isXAxisConditionalEncoding(orient.signal, titlePos, null, false);
-    enter.angle = isXAxisConditionalEncoding(orient.signal, zero, { value: sign, mult: 90});
-    enter.baseline = isXAxisConditionalEncoding(orient.signal, {signal: `(${orient.signal}) === "${Top}" ? "bottom" : "top"`}, { value: 'bottom' });
-  } else {
+  if (!isSignal(orient)) {
     if (horizontal) {
       update.x = titlePos;
       enter.angle = {value: 0};
@@ -50,6 +45,11 @@ export default function(spec, config, userEncode, dataRef) {
       enter.angle = {value: sign * 90};
       enter.baseline = {value: 'bottom'};
     }
+  } else {
+    update.x = xAxisConditionalEncoding(orient.signal, titlePos, null);
+    update.y = xAxisConditionalEncoding(orient.signal, titlePos, null, false);
+    enter.angle = xAxisConditionalEncoding(orient.signal, zero, { value: sign, mult: 90});
+    enter.baseline = xAxisConditionalEncoding(orient.signal, {signal: `(${orient.signal}) === "${Top}" ? "bottom" : "top"`}, { value: 'bottom' });
   }
 
   addEncoders(encode, {
@@ -67,7 +67,17 @@ export default function(spec, config, userEncode, dataRef) {
     align:       _('titleAlign')
   });
 
-  if (isSignal(orient)) {
+  if (!isSignal(orient)) {
+    if (!addEncode(encode, 'x', _('titleX'), 'update')) {
+      !horizontal && !has('x', userEncode)
+      && (encode.enter.auto = {value: true});
+    }
+  
+    if (!addEncode(encode, 'y', _('titleY'), 'update')) {
+      horizontal && !has('y', userEncode)
+      && (encode.enter.auto = {value: true});
+    }
+  } else {
     if (_('titleX') != null) {
       encode.update['x'][0] = {
         ...encode.update['x'][0],
@@ -77,7 +87,7 @@ export default function(spec, config, userEncode, dataRef) {
 
       encode.enter.auto = [
         {
-          test: isXAxisExpr(orient.signal, false),
+          test: xAxisExpr(orient.signal, false),
           value: !has('x', userEncode) ? true : undefined
         }
       ]
@@ -92,21 +102,11 @@ export default function(spec, config, userEncode, dataRef) {
 
       encode.enter.auto = [
         {
-          test: isXAxisExpr(orient.signal, false),
+          test: xAxisExpr(orient.signal, false),
           value: !has('x', userEncode) ? true : undefined
         }
       ]
     }
-  } else {
-    if (!addEncode(encode, 'x', _('titleX'), 'update')) {
-      !horizontal && !has('x', userEncode)
-      && (encode.enter.auto = {value: true});
-    }
-  
-    if (!addEncode(encode, 'y', _('titleY'), 'update')) {
-      horizontal && !has('y', userEncode)
-      && (encode.enter.auto = {value: true});
-    }  
   }
 
   return guideMark(TextMark, AxisTitleRole, GuideTitleStyle, null, dataRef, encode, userEncode);

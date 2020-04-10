@@ -1,4 +1,4 @@
-import { isXAxisExpr } from './axis-util';
+import { xAxisConditionalEncoding } from './axis-util';
 import {Top, Bottom, zero, one} from './constants';
 import guideMark from './guide-mark';
 import {lookup} from './guide-util';
@@ -26,55 +26,7 @@ export default function(spec, config, userEncode, dataRef) {
     strokeOpacity:    _('domainOpacity')
   });
 
-  if (isSignal(spec.orient)) {
-    enter['y'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...zero
-      },
-      {
-        ...position(spec, 0)
-      }
-    ];
-
-    enter['x'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...zero
-      },
-      {
-        ...position(spec, 0)
-      }
-    ]
-
-    update['x'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...position(spec, 0)
-      }
-    ]
-
-    update['y'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...position(spec, 0)
-      }
-    ]
-
-    update['x2'] = enter['x2'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...position(spec, 1)
-      }
-    ]
-
-    update['y2'] = enter['y2'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...position(spec, 1)
-      }
-    ]
-  } else {
+  if (!isSignal(spec.orient)) {
     if (orient === Top || orient === Bottom) {
       u = 'x';
       v = 'y';
@@ -87,6 +39,13 @@ export default function(spec, config, userEncode, dataRef) {
     enter[v] = zero;
     update[u] = enter[u] = position(spec, 0);
     update[u2] = enter[u2] = position(spec, 1);
+  } else {
+    enter.y = xAxisConditionalEncoding(orient.signal, zero, position(spec, 0));
+    enter.x = xAxisConditionalEncoding(orient.signal, zero, position(spec, 0), false);
+    update.x = xAxisConditionalEncoding(orient.signal, position(spec, 0), null);
+    update.y = xAxisConditionalEncoding(orient.signal, position(spec, 0), null, false);
+    update.x2 = enter.x2 = xAxisConditionalEncoding(orient.signal, position(spec, 1), null);
+    update.y2 = enter.y2 = xAxisConditionalEncoding(orient.signal, position(spec, 1), null, false);
   }
 
   return guideMark(RuleMark, AxisDomainRole, null, null, dataRef, encode, userEncode);

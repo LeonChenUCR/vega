@@ -5,7 +5,7 @@ import {RuleMark} from '../marks/marktypes';
 import {AxisTickRole} from '../marks/roles';
 import {addEncoders, encoder} from '../encode/encode-util';
 import { isSignal } from '../../util';
-import { ifTopOrLeftAxisExpr, isXAxisExpr } from './axis-util';
+import { ifTopOrLeftAxisExpr, xAxisConditionalEncoding } from './axis-util';
 
 export default function(spec, config, userEncode, dataRef, size, band) {
   var _ = lookup(spec, config),
@@ -39,54 +39,7 @@ export default function(spec, config, userEncode, dataRef, size, band) {
     round:  _('tickRound')
   };
 
-  if (isSignal(orient)) {
-    update.y = enter.y = [
-      {
-        test: isXAxisExpr(orient.signal, true), value: zero.value
-      },
-      {
-        ...tickPos
-      }
-    ];
-
-    update.x = enter.x = [
-      {
-        test: isXAxisExpr(orient.signal, false), value: zero.value
-      },
-      {
-        ...tickPos
-      }
-    ];
-
-    update.y2 = enter.y2 = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...tickSize
-      }
-    ]
-
-    update.x2 = enter.x2 = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...tickSize
-      }
-    ]
-
-    exit.x = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...tickPos
-      }
-    ]
-
-    exit.y = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...tickPos
-      }
-    ]
-
-  } else {
+  if (!isSignal(orient)) {
     if (orient === Top || orient === Bottom) {
       update.y = enter.y = zero;
       update.y2 = enter.y2 = tickSize;
@@ -96,6 +49,13 @@ export default function(spec, config, userEncode, dataRef, size, band) {
       update.x2 = enter.x2 = tickSize;
       update.y = enter.y = exit.y = tickPos;
     }
+  } else {
+    update.y = enter.y = xAxisConditionalEncoding(orient.signal, zero, tickPos);
+    update.x = enter.x = xAxisConditionalEncoding(orient.signal, zero, tickPos, false);
+    update.y2 = enter.y2 = xAxisConditionalEncoding(orient.signal, tickSize, null);
+    update.x2 = enter.x2 = xAxisConditionalEncoding(orient.signal, tickSize, null, false);
+    exit.x = xAxisConditionalEncoding(orient.signal, tickPos, null);
+    exit.y = xAxisConditionalEncoding(orient.signal, tickPos, null, false);
   }
 
 

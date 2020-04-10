@@ -5,7 +5,7 @@ import {TextMark} from '../marks/marktypes';
 import {AxisLabelRole} from '../marks/roles';
 import {addEncoders, encoder} from '../encode/encode-util';
 import {deref, isSignal} from '../../util';
-import { ifTopOrLeftAxisExpr, isXAxisExpr } from './axis-util';
+import { ifTopOrLeftAxisExpr, xAxisBooleanExpr, xAxisConditionalEncoding } from './axis-util';
 
 function flushExpr(scale, threshold, a, b, c) {
   return {
@@ -26,7 +26,7 @@ export default function(spec, config, userEncode, dataRef, size, band) {
       flushOn = flush === 0 || !!flush,
       labelAlign = _('labelAlign'),
       labelBaseline = _('labelBaseline'),
-      encode, enter, tickSize, tickPos, align, baseline, offset,
+      encode, enter, tickSize, tickPos, align, baseline, offset, offsetExpr,
       bound, overlap, separation;
 
   tickSize = encoder(size);
@@ -41,71 +41,7 @@ export default function(spec, config, userEncode, dataRef, size, band) {
     offset: extendOffset(band.offset, _('labelOffset'))
   };
 
-  if (isSignal(orient)) {
-    align = labelAlign ||
-      { signal: `(${orient.signal}) === "${Top}" || (${orient.signal}) === "${Bottom}" ? (${flushOn ? flushExpr(scale, flush, '"left"', '"right"', '"center"').signal : "'center'"}) : (${orient.signal}) === "${Right}" ? "left" : "right"`};
-
-    baseline = labelBaseline || {
-      signal: `(${orient.signal}) === "${Top}" ? "bottom" : (${orient.signal}) === "${Bottom}" ? "top" : ${flushOn ? flushExpr(scale, flush, '"top"', '"bottom"', '"middle"') : "'middle'"}`
-    }
-
-    offset = !labelAlign;
-
-    offset = offset && flushOn && flushOffset
-    ? flushExpr(scale, flush, '-(' + flushOffset + ')', flushOffset, 0)
-    : null;
-    
-    encode = {
-      enter: enter = {
-        opacity: zero,
-        x: [
-          {
-            test: isXAxisExpr(orient.signal, true),
-            ...tickPos
-          },
-          {
-            ...tickSize
-          }
-        ],
-        y: [
-          {
-            test: isXAxisExpr(orient.signal, true),
-            ...tickSize
-          },
-          {
-            ...tickPos
-          }
-        ]
-      },
-      update: {
-        opacity: one,
-        text: {field: Label},
-        x: enter.x,
-        y: enter.y
-      },
-      exit: {
-        opacity: zero,
-        x: enter.x,
-        y: enter.y
-      }
-    }
-
-    addEncoders(encode, {
-      dx: { signal: `${isXAxisExpr(orient.signal, true)} ? ${offset} : null` },
-      dy: { signal: `${isXAxisExpr(orient.signal, true)} ? null : ${offset}` },
-      align:       align,
-      baseline:    baseline,
-      angle:       _('labelAngle'),
-      fill:        _('labelColor'),
-      fillOpacity: _('labelOpacity'),
-      font:        _('labelFont'),
-      fontSize:    _('labelFontSize'),
-      fontWeight:  _('labelFontWeight'),
-      fontStyle:   _('labelFontStyle'),
-      limit:       _('labelLimit'),
-      lineHeight:  _('labelLineHeight')
-    });
-  } else {
+  if (!isSignal(orient)) {
     if (isXAxis) {
       align = labelAlign || (flushOn
         ? flushExpr(scale, flush, '"left"', '"right"', '"center"')
@@ -123,41 +59,70 @@ export default function(spec, config, userEncode, dataRef, size, band) {
     offset = offset && flushOn && flushOffset
       ? flushExpr(scale, flush, '-(' + flushOffset + ')', flushOffset, 0)
       : null;
-  
-    encode = {
-      enter: enter = {
-        opacity: zero,
-        x: isXAxis ? tickPos : tickSize,
-        y: isXAxis ? tickSize : tickPos
-      },
-      update: {
-        opacity: one,
-        text: {field: Label},
-        x: enter.x,
-        y: enter.y
-      },
-      exit: {
-        opacity: zero,
-        x: enter.x,
-        y: enter.y
-      }
+
+    enter = {
+      opacity: zero,
+      x: isXAxis ? tickPos : tickSize,
+      y: isXAxis ? tickSize : tickPos
+    }
+  } else {
+    align = labelAlign ||
+      { signal: `(${orient.signal}) === "${Top}" || (${orient.signal}) === "${Bottom}" ? (${flushOn ? flushExpr(scale, flush, '"left"', '"right"', '"center"').signal : "'center'"}) : (${orient.signal}) === "${Right}" ? "left" : "right"`};
+
+    baseline = labelBaseline || {
+      signal: `(${orient.signal}) === "${Top}" ? "bottom" : (${orient.signal}) === "${Bottom}" ? "top" : ${flushOn ? flushExpr(scale, flush, '"top"', '"bottom"', '"middle"') : "'middle'"}`
+    }
+
+    offsetExpr = flushExpr(scale, flush, '-(' + flushOffset + ')', flushOffset, 0).signal;
+    offset = `${xAxisBooleanExpr(orient.signal)} ? (${!labelAlign && flushOn && flushOffset ? offsetExpr : null}) : (${!labelBaseline && flushOn && flushOffset ? offsetExpr : null})`;
+    
+    enter = {
+      opacity: zero,
+      x: xAxisConditionalEncoding(orient.signal, tickPos, tickSize),
+      y: xAxisConditionalEncoding(orient.signal, tickPos, tickSize, false)
     };
-  
+  }
+
+  encode = {
+    enter: enter,
+    update: {
+      opacity: one,
+      text: {field: Label},
+      x: enter.x,
+      y: enter.y
+    },
+    exit: {
+      opacity: zero,
+      x: enter.x,
+      y: enter.y
+    }
+  };
+
+  if (!isSignal(orient)) {
     addEncoders(encode, {
       [isXAxis ? 'dx' : 'dy'] : offset,
-      align:       align,
-      baseline:    baseline,
-      angle:       _('labelAngle'),
-      fill:        _('labelColor'),
-      fillOpacity: _('labelOpacity'),
-      font:        _('labelFont'),
-      fontSize:    _('labelFontSize'),
-      fontWeight:  _('labelFontWeight'),
-      fontStyle:   _('labelFontStyle'),
-      limit:       _('labelLimit'),
-      lineHeight:  _('labelLineHeight')
+    });
+  } else {
+    addEncoders(encode, {
+      dx: { signal: `${xAxisBooleanExpr(orient.signal)} ? (${offset}) : null` },
+      dy: { signal: `${xAxisBooleanExpr(orient.signal, false)} ? (${offset}) : null` }
     });
   }
+
+  addEncoders(encode, {
+    align:       align,
+    baseline:    baseline,
+    angle:       _('labelAngle'),
+    fill:        _('labelColor'),
+    fillOpacity: _('labelOpacity'),
+    font:        _('labelFont'),
+    fontSize:    _('labelFontSize'),
+    fontWeight:  _('labelFontWeight'),
+    fontStyle:   _('labelFontStyle'),
+    limit:       _('labelLimit'),
+    lineHeight:  _('labelLineHeight')
+  });
+    
 
 
   bound   = _('labelBound');

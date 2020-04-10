@@ -1,15 +1,15 @@
 import { stringValue } from "vega-util";
 import { Top, Bottom, Left } from "./constants";
 
-export function ifXAxisExpr(signalExpr, ifXAxis, otherwise) {
+export function xAxisExpr(signalExpr, ifXAxis, otherwise) {
   var ifXAxisStr = stringValue(ifXAxis);
   var otherwiseStr = stringValue(otherwise);
   return {
-    signal: `${isXAxisExpr(signalExpr)} ? (${ifXAxisStr}) : (${otherwiseStr})`
+    signal: `${xAxisBooleanExpr(signalExpr)} ? (${ifXAxisStr}) : (${otherwiseStr})`
   }
 }
   
-export function isXAxisExpr(signalExpr, isXAxis = true) {
+export function xAxisBooleanExpr(signalExpr, isXAxis = true) {
   return `${isXAxis ? '' : '!'}((${signalExpr}) === "${Top}" || (${signalExpr}) === "${Bottom}")`
 }
 
@@ -32,14 +32,11 @@ export function ifTopOrLeftAxisExpr(signalExpr, ifTopOrLeft, otherwise) {
   }
 }
  
-export function isXAxisConditionalEncoding(signalExpr, ifXAxis, otherwise, isXAxis = true) {
+export function xAxisConditionalEncoding(signalExpr, ifXAxis, otherwise, isXAxis = true) {
   return [
     {
-      test: isXAxisExpr(signalExpr, isXAxis),
+      test: xAxisBooleanExpr(signalExpr, isXAxis),
       ...ifXAxis
-    },
-    otherwise ? {
-      ...otherwise
-    } : undefined
-  ]
+    }
+  ].concat(otherwise ? [otherwise] : []);
 }

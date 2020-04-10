@@ -6,7 +6,7 @@ import {AxisGridRole} from '../marks/roles';
 import {addEncoders} from '../encode/encode-util';
 import {extend, isObject} from 'vega-util';
 import { isSignal } from '../../util';
-import { ifTopOrLeftAxisExpr, isXAxisExpr, ifXAxisExpr } from './axis-util';
+import { ifTopOrLeftAxisExpr, xAxisExpr, xAxisConditionalEncoding } from './axis-util';
 
 export default function(spec, config, userEncode, dataRef, band) {
   var _ = lookup(spec, config),
@@ -39,51 +39,7 @@ export default function(spec, config, userEncode, dataRef, band) {
     round:  _('tickRound')
   };
 
-  if (isSignal(orient)) {
-    update['x']  = enter['x'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...tickPos
-      },
-      ...(vscale ? { scale: vscale, range: 0, mult: sign, offset: offset} : { value: 0, offset: offset})
-    ];
-
-    update['y'] = enter['y'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...tickPos
-      },
-      ...(vscale ? { scale: vscale, range: 0, mult: sign, offset: offset} : { value: 0, offset: offset})
-    ];
-
-    exit['x'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...tickPos
-      }
-    ];
-
-    exit['y'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...tickPos
-      }
-    ];
-
-    update['y2'] = enter['y2'] = [
-      {
-        test: isXAxisExpr(orient.signal, true),
-        ...(vscale ? {scale: vscale, range: 1, mult: sign, offset: offset} : {signal: ifXAxisExpr(orient.signal, 'height', 'width').signal, mult: sign, offset: offset})
-      }
-    ];
-
-    update['x2'] = enter['x2'] = [
-      {
-        test: isXAxisExpr(orient.signal, false),
-        ...(vscale ? {scale: vscale, range: 1, mult: sign, offset: offset} : {signal: ifXAxisExpr(orient.signal, 'height', 'width').signal, mult: sign, offset: offset})
-      }
-    ]
-  } else {
+  if (!isSignal(orient)) {
     if (orient === Top || orient === Bottom) {
       u = 'x';
       v = 'y';
@@ -104,6 +60,13 @@ export default function(spec, config, userEncode, dataRef, band) {
       update[v] = enter[v] = {value: 0, offset: offset};
       update[v2] = enter[v2] = {signal: s, mult: sign, offset: offset};
     }
+  } else {
+    update.x = enter.x = xAxisConditionalEncoding(orient.signal, tickPos, vscale ? { scale: vscale, range: 0, mult: sign, offset: offset} : { value: 0, offset: offset});
+    update.y = enter.y = xAxisConditionalEncoding(orient.signal, tickPos, vscale ? { scale: vscale, range: 0, mult: sign, offset: offset} : { value: 0, offset: offset}, false);
+    exit.x = xAxisConditionalEncoding(orient.signal, tickPos, null);
+    exit.y = xAxisConditionalEncoding(orient.signal, tickPos, null, false);
+    update.y2 = enter.y2 = xAxisConditionalEncoding(orient.signal, vscale ? {scale: vscale, range: 1, mult: sign, offset: offset} : {signal: xAxisExpr(orient.signal, 'height', 'width').signal, mult: sign, offset: offset}, null);
+    update.x2 = enter.x2 = xAxisConditionalEncoding(orient.signal, vscale ? {scale: vscale, range: 1, mult: sign, offset: offset} : {signal: xAxisExpr(orient.signal, 'height', 'width').signal, mult: sign, offset: offset}, null, false);
   }
   
 
